@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>JoonixGold</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="bg-anim"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="particles" id="particles"></div></div>
+<div class="loading" id="loading"><div class="ld-spinner"><div></div><div></div><div></div></div><h2 class="ld-title">JoonixGold</h2><p class="ld-sub">Загружаем магазин...</p></div>
+<div class="app" id="app" style="display:none">
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+<div class="sb-header"><div class="sb-logo"><i class="fas fa-gem"></i></div><div class="sb-brand"><h2>JoonixGold</h2><span>Game Store</span></div><button class="sb-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button></div>
+<nav class="sb-nav">
+<button class="sb-item active" data-page="categories" onclick="navigate('categories')"><i class="fas fa-th-large"></i><span>Категории</span></button>
+<button class="sb-item" data-page="shop" onclick="navigate('shop')" id="sbShopBtn" style="display:none"><i class="fas fa-shopping-bag"></i><span>Купить</span></button>
+<button class="sb-item" data-page="orders" onclick="navigate('orders')"><i class="fas fa-receipt"></i><span>Мои заказы</span></button>
+<button class="sb-item" data-page="settings" onclick="navigate('settings')"><i class="fas fa-cog"></i><span>Настройки</span></button>
+</nav>
+<div class="sb-footer"><div class="sb-balance"><i class="fas fa-coins"></i><div><span class="sb-bal-label">Баланс</span><span class="sb-bal-value" id="sbBalance">0 голды</span></div></div></div>
+</aside>
+<header class="topbar"><div class="topbar-glass"></div><div class="topbar-content">
+<button class="menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+<div class="topbar-title"><h1>JoonixGold</h1></div>
+<div class="topbar-right"><button class="notif-btn" onclick="navigate('notifications')"><i class="fas fa-bell"></i><span class="badge" id="nBadge" style="display:none">0</span></button><button class="profile-btn" onclick="navigate('profile')"><div class="avatar" id="topAvatar"><i class="fas fa-user"></i></div></button></div>
+</div></header>
+<main class="main">
+<section class="page active" id="pg-categories">
+<div class="section"><div class="welcome-card"><div class="wc-bg"></div><div class="wc-content"><h2>Добро пожаловать!</h2><p>Выберите игру и начните покупки по лучшим ценам</p></div></div></div>
+<div class="section"><h2 class="sec-title"><i class="fas fa-gamepad"></i> Выберите категорию</h2>
+<div class="cat-grid">
+<div class="cat-card" onclick="selectCategory('standoff2')"><div class="cat-bg so2"></div><div class="cat-inner"><div class="cat-icon"><i class="fas fa-crosshairs"></i></div><h3>Standoff 2</h3><p id="catPriceLabel">от 0.67₽ за голду</p><div class="cat-tag available">Доступно</div></div><div class="cat-glow"></div></div>
+<div class="cat-card locked"><div class="cat-bg bs"></div><div class="cat-inner"><div class="cat-icon"><i class="fas fa-star"></i></div><h3>Brawl Stars</h3><p>Скоро</p><div class="cat-tag soon">Скоро</div></div><div class="cat-lock"><i class="fas fa-lock"></i></div></div>
+</div></div>
+</section>
+<section class="page" id="pg-shop">
+<div class="section"><button class="back-btn" onclick="navigate('categories')"><i class="fas fa-arrow-left"></i> К категориям</button></div>
+<div class="section"><h2 class="sec-title"><i class="fas fa-bolt"></i> Быстрая покупка</h2><div class="gold-grid" id="goldGrid"></div></div>
+<div class="section"><h2 class="sec-title"><i class="fas fa-sliders-h"></i> Своё количество</h2>
+<div class="glass-card"><div class="gc-inner">
+<label class="field-label">Количество голды</label>
+<div class="inp-row"><button class="inp-btn" onclick="adj(-100)"><i class="fas fa-minus"></i></button><input type="number" id="goldInp" value="100" min="100" oninput="calcPrice()"><button class="inp-btn" onclick="adj(100)"><i class="fas fa-plus"></i></button></div>
+<input type="range" id="goldSlider" min="100" max="10000" value="100" step="10" oninput="fromSlider()">
+<div class="range-labels"><span>100</span><span>5000</span><span>10000</span></div>
+<div class="price-box">
+<div class="pb-row"><span>Голда</span><span id="dGold">100</span></div>
+<div class="pb-row"><span>Цена за 1</span><span id="dPer">0.67₽</span></div>
+<div class="pb-row"><span>Цена скина (+20%)</span><span id="dSkin" class="gold-text">83.75₽</span></div>
+<div class="pb-divider"></div>
+<div class="pb-row total"><span>Итого</span><span id="dTotal">67.00₽</span></div>
+</div>
+<button class="cta-btn" onclick="openOrder()"><i class="fas fa-shopping-cart"></i> Купить<div class="cta-shine"></div></button>
+</div></div></div>
+<div class="section"><h2 class="sec-title"><i class="fas fa-list-ol"></i> Как купить</h2><div class="steps">
+<div class="step"><div class="step-n">1</div><div><h4>Выберите количество</h4><p>Минимум 100 голды</p></div></div>
+<div class="step"><div class="step-n">2</div><div><h4>Выставите скин на ТП</h4><p><b>M4 Flock</b> по указанной цене</p></div></div>
+<div class="step"><div class="step-n">3</div><div><h4>Отправьте скриншот</h4><p>В бот @JoonixGold_bot</p></div></div>
+<div class="step"><div class="step-n">4</div><div><h4>Получите голду!</h4><p>5-30 минут</p></div></div>
+</div></div>
+<div class="section last-section"><div class="features">
+<div class="feat"><div class="feat-ic"><i class="fas fa-bolt"></i></div><h4>Быстро</h4><p>5-30 мин</p></div>
+<div class="feat"><div class="feat-ic"><i class="fas fa-shield-alt"></i></div><h4>Безопасно</h4><p>Гарантия</p></div>
+<div class="feat"><div class="feat-ic"><i class="fas fa-percentage"></i></div><h4>Кэшбэк</h4><p>За отзыв</p></div>
+</div></div>
+</section>
+<section class="page" id="pg-orders">
+<div class="section"><h2 class="sec-title"><i class="fas fa-receipt"></i> Мои заказы</h2><div id="ordersList" class="list-container"><div class="empty"><div class="empty-ic"><i class="fas fa-box-open"></i></div><h3>Пока пусто</h3><p>Заказы появятся здесь</p></div></div></div>
+<div class="section" id="reviewSection" style="display:none"><h2 class="sec-title"><i class="fas fa-star"></i> Оставить отзыв</h2><div id="reviewCards"></div></div>
+</section>
+<section class="page" id="pg-notifications">
+<div class="section"><h2 class="sec-title"><i class="fas fa-bell"></i> Уведомления</h2><div id="notifList" class="list-container"><div class="empty"><div class="empty-ic"><i class="fas fa-bell-slash"></i></div><h3>Нет уведомлений</h3><p>Появятся здесь</p></div></div></div>
+</section>
+<section class="page" id="pg-profile">
+<div class="section"><div class="profile-hero"><div class="ph-bg"></div><div class="ph-content">
+<div class="ph-avatar" id="profAvatar"><i class="fas fa-user"></i></div>
+<h2 id="profName">—</h2><p class="ph-username" id="profUser">@</p>
+<div class="ph-id"><i class="fas fa-fingerprint"></i> <span id="profId">ID</span></div>
+</div><div class="ph-stats">
+<div class="phs"><span class="phs-v" id="pOrders">0</span><span class="phs-l">Заказов</span></div>
+<div class="phs"><span class="phs-v" id="pSpent">0₽</span><span class="phs-l">Потрачено</span></div>
+<div class="phs"><span class="phs-v" id="pBalance">0</span><span class="phs-l">Баланс</span></div>
+<div class="phs"><span class="phs-v" id="pReviews">0</span><span class="phs-l">Отзывы</span></div>
+</div></div></div>
+<div class="section"><h2 class="sec-title"><i class="fas fa-ticket-alt"></i> Промокод</h2>
+<div class="glass-card"><div class="gc-inner">
+<input type="text" id="promoInp" class="g-input" placeholder="Введите промокод" maxlength="30">
+<button class="promo-btn" onclick="activatePromo()"><i class="fas fa-gift"></i> Активировать</button>
+<div id="promoRes" class="promo-result" style="display:none"></div>
+</div></div></div>
+</section>
+<section class="page" id="pg-settings">
+<div class="section"><h2 class="sec-title"><i class="fas fa-cog"></i> Настройки</h2>
+<div class="settings-list">
+<a class="set-item" id="termsLink" href="#" target="_blank"><div class="set-ic"><i class="fas fa-file-contract"></i></div><div class="set-text"><h4>Пользовательское соглашение</h4><p>Условия использования</p></div><i class="fas fa-external-link-alt set-arrow"></i></a>
+<a class="set-item" id="privacyLink" href="#" target="_blank"><div class="set-ic"><i class="fas fa-user-shield"></i></div><div class="set-text"><h4>Политика конфиденциальности</h4><p>Защита данных</p></div><i class="fas fa-external-link-alt set-arrow"></i></a>
+<a class="set-item" href="https://t.me/joonix_news" target="_blank"><div class="set-ic"><i class="fas fa-newspaper"></i></div><div class="set-text"><h4>Новости</h4><p>@joonix_news</p></div><i class="fas fa-chevron-right set-arrow"></i></a>
+<a class="set-item" href="https://t.me/JoonixGold_otzivi" target="_blank"><div class="set-ic"><i class="fas fa-star"></i></div><div class="set-text"><h4>Отзывы</h4><p>@JoonixGold_otzivi</p></div><i class="fas fa-chevron-right set-arrow"></i></a>
+</div></div>
+</section>
+</main></div>
+<div class="modal-bg" id="orderModal"><div class="modal"><div class="modal-glass"></div><div class="modal-inner">
+<div class="modal-head"><h3><i class="fas fa-receipt"></i> Оформление</h3><button class="modal-x" onclick="closeOrder()"><i class="fas fa-times"></i></button></div>
+<div class="modal-body"><div class="order-sum">
+<div class="os-game"><i class="fas fa-crosshairs"></i> Standoff 2</div>
+<div class="os-row"><span>Голда:</span><span id="mGold">100</span></div>
+<div class="os-row"><span>Цена:</span><span id="mPrice">67₽</span></div>
+<div class="os-row gold-hl"><span>Скин на ТП:</span><span id="mSkin">83.75₽</span></div>
+<div class="os-divider"></div>
+<div class="os-note"><i class="fas fa-info-circle"></i><p>Выставьте <b>M4 Flock</b> на ТП по цене <b id="mSkin2">83.75₽</b></p></div>
+</div>
+<div class="field"><label><i class="fas fa-id-card"></i> ID в Standoff 2</label><input type="text" id="gidInp" class="g-input" placeholder="Игровой ID"><span class="field-hint">В настройках профиля игры</span></div>
+</div>
+<div class="modal-foot"><button class="cta-btn" onclick="confirmOrder()"><i class="fas fa-check-circle"></i> Подтвердить<div class="cta-shine"></div></button></div>
+</div></div></div>
+<div class="modal-bg" id="successModal"><div class="modal modal-success"><div class="modal-glass"></div><div class="modal-inner center">
+<div class="success-ring"><i class="fas fa-check"></i></div>
+<h3>Заказ оформлен!</h3><p>#<span id="sOid"></span></p>
+<div class="success-guide"><p>Выставьте <b id="sSkin">M4 Flock</b> на ТП за <b id="sSkinP">83.75₽</b></p><p class="sub">Скриншот отправьте в бот @JoonixGold_bot</p>
+<div class="req-list"><h4>На скриншоте:</h4><ul>
+<li><i class="fas fa-check"></i> «Только мои запросы» вкл</li>
+<li><i class="fas fa-check"></i> Аватарка видна</li>
+<li><i class="fas fa-check"></i> Цена верная</li>
+<li><i class="fas fa-check"></i> Паттерн виден</li>
+<li><i class="fas fa-check"></i> Скин M4 Flock</li>
+</ul></div></div>
+<button class="cta-btn" onclick="closeSuccess()">Понятно</button>
+</div></div></div>
+<div class="modal-bg" id="reviewModal"><div class="modal"><div class="modal-glass"></div><div class="modal-inner">
+<div class="modal-head"><h3><i class="fas fa-star"></i> Отзыв</h3><button class="modal-x" onclick="closeReview()"><i class="fas fa-times"></i></button></div>
+<div class="modal-body"><p class="review-sub">За отзыв — кэшбэк голдой!</p>
+<div class="field"><label>Комментарий</label><textarea id="revComment" class="g-input textarea" rows="3" placeholder="Ваш отзыв..."></textarea></div>
+<div class="field"><label>Оценка</label><div class="star-rating" id="starRating">
+<button onclick="setRating(1)"><i class="fas fa-star"></i></button><button onclick="setRating(2)"><i class="fas fa-star"></i></button><button onclick="setRating(3)"><i class="fas fa-star"></i></button><button onclick="setRating(4)"><i class="fas fa-star"></i></button><button onclick="setRating(5)"><i class="fas fa-star"></i></button>
+</div></div></div>
+<div class="modal-foot"><button class="cta-btn" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Отправить</button></div>
+</div></div></div>
+<div class="toast" id="toast"><i class="toast-ic fas fa-info-circle"></i><span class="toast-tx"></span></div>
+<script src="/static/js/app.js"></script>
+</body></html>
